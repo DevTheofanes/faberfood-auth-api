@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { IUser, IUserParams } from 'src/domain/services';
+import { HashService } from './hash.service';
 import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly hashService: HashService,
+  ) {}
 
   async create(user: IUserParams): Promise<IUser> {
     const { name, username, password, email } = user;
@@ -14,7 +18,7 @@ export class UserService {
       data: {
         name,
         username,
-        password,
+        password: await this.hashService.generateHash(password),
         email,
         userAccess: [],
         createdAt: today,
