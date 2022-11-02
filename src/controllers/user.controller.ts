@@ -13,6 +13,8 @@ export class UserController {
 
   @Get('/info/:id')
   async findAccount(@Param() params: { id: string }): Promise<IUser> {
-    return await this.userService.findOne(+params.id);
+    return await this.userService.findOne({
+      id: +params.id,
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IUser, IUserParams } from 'src/domain/services';
+import { IFindUser, IUser, IUserParams } from 'src/domain/services';
 import { HashService } from './hash.service';
 import { PrismaService } from './prisma.service';
 
@@ -27,9 +27,9 @@ export class UserService {
     });
   }
 
-  async findOne(id: number): Promise<IUser> {
+  async findOne(params: IFindUser): Promise<IUser> {
     return await this.prismaService.user.findFirst({
-      where: { id },
+      where: params,
     });
   }
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { UserController } from './controllers';
+import { UserController, SessionController } from './controllers';
 import {
   HashService,
   PrismaService,
@@ -9,7 +9,7 @@ import {
 } from './services';
 @Module({
   imports: [ConfigModule.forRoot()],
-  controllers: [UserController],
+  controllers: [UserController, SessionController],
   providers: [PrismaService, UserService, HashService, SessionService],
 })
 export class AppModule {}

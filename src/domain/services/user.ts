@@ -20,3 +20,10 @@ export interface IUser {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IFindUser {
+  id?: number;
+  username?: string;
+  email?: string;
+  phone?: string;
+}
