@@ -8,7 +8,6 @@ export class HashService {
     return await bcrypt.hash(word, 8);
   }
   async compare(word: string, wordWithHash: string): Promise<boolean> {
-    console.log(word, wordWithHash);
     return await bcrypt.compare(word, wordWithHash);
   }
 }

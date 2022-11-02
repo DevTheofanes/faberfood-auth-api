@@ -1,4 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { ISessionParams, ISessionResult } from 'src/domain/services';
 import { HashService, SessionService, UserService } from 'src/services';
 
@@ -21,7 +27,7 @@ export class SessionController {
     });
 
     if (!user) {
-      return 'User Not Found';
+      throw new HttpException('User Not Found.', HttpStatus.NOT_FOUND);
     }
 
     const passwordIsValid = await this.hashService.compare(
@@ -30,7 +36,7 @@ export class SessionController {
     );
 
     if (!passwordIsValid) {
-      return 'Password not is valid';
+      throw new HttpException('Password not is valid', HttpStatus.BAD_REQUEST);
     }
 
     return {
