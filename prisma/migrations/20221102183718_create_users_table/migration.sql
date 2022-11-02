@@ -7,7 +7,7 @@ CREATE TABLE `user` (
     `phone` VARCHAR(191) NULL,
     `password` VARCHAR(191) NOT NULL,
     `active` BOOLEAN NOT NULL DEFAULT true,
-    `user_acess` JSON NOT NULL,
+    `user_access` JSON NOT NULL,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3) NOT NULL,
 
