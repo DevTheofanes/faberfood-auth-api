@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { IUser, IUserParams } from 'src/domain/services';
 import { AuthorizationGuard } from 'src/guards';
 import { UserService } from 'src/services';
@@ -18,6 +26,12 @@ export class UserController {
     const user = await this.userService.findOne({
       id: +params.id,
     });
+
+    if (!user) {
+      throw new NotFoundException({
+        error: 'User not found.',
+      });
+    }
 
     return {
       ...user,

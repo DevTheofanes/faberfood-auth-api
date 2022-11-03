@@ -51,7 +51,7 @@ export class UserService {
     };
   }
 
-  async findOne(params: IFindUser): Promise<IUser> {
+  async findOne(params: IFindUser): Promise<IUser | null> {
     const user = await this.prismaService.user.findFirst({
       where: params,
       select: {
@@ -69,7 +69,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      return null;
     }
 
     return {
