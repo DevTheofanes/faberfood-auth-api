@@ -7,11 +7,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { IRequest } from 'src/domain/services';
-import { SessionService } from 'src/services';
+import { SessionService, UserService } from 'src/services';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
-  constructor(private readonly sessionService: SessionService) {}
+  constructor(
+    private readonly sessionService: SessionService,
+    private readonly userService: UserService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { headers, route, method } = context
@@ -25,8 +28,12 @@ export class AuthorizationGuard implements CanActivate {
       const tokenIsValid = this.sessionService.decodeToken(
         headers.authorization.split(' ')[1],
       );
-      const userAccess = tokenIsValid.userAccess as string[];
 
+      const user = await this.userService.findOne({
+        id: tokenIsValid.id,
+      });
+
+      const userAccess = user.userAccess as string[];
       const featureAccess = `${method}:${route.path}`;
       if (!userAccess.find((access) => access === featureAccess)) {
         throw new UnauthorizedException({

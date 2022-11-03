@@ -85,4 +85,28 @@ export class UserService {
       updatedAt: user.updatedAt,
     };
   }
+
+  async addFeatureAccess(params: {
+    userId: number;
+    feature: string;
+  }): Promise<void> {
+    const userPreview = await this.prismaService.user.findFirst({
+      where: { id: params.userId },
+    });
+
+    if (!userPreview) {
+      throw new Error('User not found');
+    }
+
+    const userAccessPreview = userPreview.userAccess as string[];
+
+    if (!userAccessPreview.find((access) => access === params.feature)) {
+      await this.prismaService.user.update({
+        where: { id: params.userId },
+        data: {
+          userAccess: [...userAccessPreview, params.feature],
+        },
+      });
+    }
+  }
 }

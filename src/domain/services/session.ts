@@ -14,7 +14,7 @@ export interface ITokenGenerateParams {
 }
 
 export interface TokenPayload {
-  id: string;
+  id: number;
   userClassification: {
     id: number;
     description: string;

@@ -39,6 +39,11 @@ export class SessionController {
       throw new HttpException('Password not is valid', HttpStatus.BAD_REQUEST);
     }
 
+    await this.userService.addFeatureAccess({
+      userId: user.id,
+      feature: 'GET:/user/info/:id',
+    });
+
     return {
       user: {
         ...user,
