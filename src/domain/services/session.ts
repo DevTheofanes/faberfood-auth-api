@@ -15,7 +15,11 @@ export interface ITokenGenerateParams {
 
 export interface TokenPayload {
   id: string;
-  manager: boolean;
+  userClassification: {
+    id: number;
+    description: string;
+  };
+  userAccess: Prisma.JsonValue;
   iat: number;
   exp: number;
 }

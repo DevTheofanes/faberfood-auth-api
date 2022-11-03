@@ -6,7 +6,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { IHeaders } from 'src/domain/services/http';
+import { IRequest } from 'src/domain/services';
 import { SessionService } from 'src/services';
 
 @Injectable()
@@ -14,8 +14,9 @@ export class AuthorizationGuard implements CanActivate {
   constructor(private readonly sessionService: SessionService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const headers = context.switchToHttp().getRequest().headers as IHeaders;
-
+    const { headers, route, method } = context
+      .switchToHttp()
+      .getRequest() as IRequest;
     if (!headers.authorization) {
       throw new HttpException('Token Not Found.', HttpStatus.FORBIDDEN);
     }
@@ -24,7 +25,6 @@ export class AuthorizationGuard implements CanActivate {
       const tokenIsValid = this.sessionService.decodeToken(
         headers.authorization.split(' ')[1],
       );
-      console.log(tokenIsValid);
 
       return true;
     } catch (error) {

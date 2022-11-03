@@ -15,8 +15,13 @@ export class UserController {
   @Get('/info/:id')
   @UseGuards(AuthorizationGuard)
   async findAccount(@Param() params: { id: string }): Promise<IUser> {
-    return this.userService.findOne({
+    const user = await this.userService.findOne({
       id: +params.id,
     });
+
+    return {
+      ...user,
+      password: undefined,
+    };
   }
 }

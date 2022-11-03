@@ -40,11 +40,11 @@ export class SessionController {
     }
 
     return {
-      user,
-      token: this.sessionService.generateToken({
-        id: user.id,
-        userAccess: user.userAccess,
-      }),
+      user: {
+        ...user,
+        password: undefined,
+      },
+      token: this.sessionService.generateToken(user),
     };
   }
 }

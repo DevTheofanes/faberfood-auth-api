@@ -14,9 +14,12 @@ export interface IUser {
   username: string;
   email: string | null;
   phone: string | null;
-  password: string;
-  active: boolean;
+  password?: string;
   userAccess: Prisma.JsonValue;
+  userClassification: {
+    id: number;
+    description: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }

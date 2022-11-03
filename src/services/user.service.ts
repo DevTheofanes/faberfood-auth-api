@@ -14,7 +14,7 @@ export class UserService {
     const { name, username, password, email } = user;
     const today = new Date().toISOString();
 
-    return this.prismaService.user.create({
+    const newAccount = await this.prismaService.user.create({
       data: {
         name,
         username,
@@ -25,12 +25,64 @@ export class UserService {
         createdAt: today,
         updatedAt: today,
       },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        phone: true,
+        userAccess: true,
+        fkUserClassification: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
+
+    return {
+      id: newAccount.id,
+      name: newAccount.name,
+      username: newAccount.username,
+      email: newAccount.email,
+      phone: newAccount.phone,
+      userAccess: newAccount.userAccess,
+      userClassification: newAccount.fkUserClassification,
+      createdAt: newAccount.createdAt,
+      updatedAt: newAccount.updatedAt,
+    };
   }
 
   async findOne(params: IFindUser): Promise<IUser> {
-    return this.prismaService.user.findFirst({
+    const user = await this.prismaService.user.findFirst({
       where: params,
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        password: true,
+        phone: true,
+        userAccess: true,
+        fkUserClassification: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      phone: user.phone,
+      password: user.password,
+      userAccess: user.userAccess,
+      userClassification: user.fkUserClassification,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }

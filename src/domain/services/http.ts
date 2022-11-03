@@ -3,3 +3,12 @@ export interface IHeaders {
   authorization?: string;
   accept: string;
 }
+
+export interface IRequest {
+  url: string;
+  method: string;
+  headers: IHeaders;
+  route: {
+    path: string;
+  };
+}
