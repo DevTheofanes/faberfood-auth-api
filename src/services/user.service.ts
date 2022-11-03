@@ -14,12 +14,13 @@ export class UserService {
     const { name, username, password, email } = user;
     const today = new Date().toISOString();
 
-    return await this.prismaService.user.create({
+    return this.prismaService.user.create({
       data: {
         name,
         username,
         password: await this.hashService.generateHash(password),
         email,
+        userClassificationId: 1,
         userAccess: [],
         createdAt: today,
         updatedAt: today,
@@ -28,7 +29,7 @@ export class UserService {
   }
 
   async findOne(params: IFindUser): Promise<IUser> {
-    return await this.prismaService.user.findFirst({
+    return this.prismaService.user.findFirst({
       where: params,
     });
   }

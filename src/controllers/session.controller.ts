@@ -41,7 +41,10 @@ export class SessionController {
 
     return {
       user,
-      token: this.sessionService.generateToken(user),
+      token: this.sessionService.generateToken({
+        id: user.id,
+        userAccess: user.userAccess,
+      }),
     };
   }
 }
