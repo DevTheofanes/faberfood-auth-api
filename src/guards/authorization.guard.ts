@@ -25,11 +25,25 @@ export class AuthorizationGuard implements CanActivate {
       const tokenIsValid = this.sessionService.decodeToken(
         headers.authorization.split(' ')[1],
       );
+      const userAccess = tokenIsValid.userAccess as string[];
+
+      const featureAccess = `${method}:${route.path}`;
+      if (!userAccess.find((access) => access === featureAccess)) {
+        throw new UnauthorizedException({
+          customMessage: 'Access Invalid',
+        });
+      }
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
+      let message = 'Token Invalid';
+
+      if (error?.response?.customMessage) {
+        message = error?.response?.customMessage;
+      }
+
       throw new UnauthorizedException({
-        error: 'Token Invalid',
+        error: message,
       });
     }
   }
