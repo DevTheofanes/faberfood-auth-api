@@ -16,13 +16,31 @@ export class UserService {
   ) {}
 
   async create(user: IUserParams): Promise<IUser> {
-    const { name, username, password, email } = user;
+    const { name, username, password, phone, email } = user;
     const today = new Date().toISOString();
+
+    const otherUserWithUsernameAlready = await this.findOne({ username });
+
+    if (otherUserWithUsernameAlready)
+      throw new Error('Already Exists User with this username');
+
+    if (email) {
+      const otherUserWithEmailAlready = await this.findOne({ email });
+      if (otherUserWithEmailAlready)
+        throw new Error('Already Exists User with this email');
+    }
+
+    if (phone) {
+      const otherUserWithPhoneAlready = await this.findOne({ phone });
+      if (otherUserWithPhoneAlready)
+        throw new Error('Already Exists User with this phone');
+    }
 
     const newAccount = await this.prismaService.user.create({
       data: {
         name,
         username,
+        phone,
         password: await this.hashService.generateHash(password),
         email,
         userClassificationId: 1,

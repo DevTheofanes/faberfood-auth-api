@@ -12,7 +12,10 @@ import {
   // UseGuards,
 } from '@nestjs/common';
 import { IReq, IUpdateUser, IUser, IUserParams } from 'src/domain/services';
-import { CreateUserValidatorPipe } from 'src/pipes/validators';
+import {
+  CreateUserValidatorPipe,
+  UpdateAccountValidatorPipe,
+} from 'src/pipes/validators';
 import { UserService } from 'src/services';
 
 @Controller('user')
@@ -22,7 +25,20 @@ export class UserController {
   @UsePipes(CreateUserValidatorPipe)
   @Post()
   async createAccount(@Body() body: IUserParams): Promise<IUser> {
-    return this.userService.create(body);
+    let user: IUser | undefined;
+    try {
+      user = await this.userService.create(body);
+    } catch (error: any) {
+      throw new BadRequestException({ error: error.message });
+    }
+
+    if (!user) {
+      throw new NotFoundException({
+        error: 'User not found.',
+      });
+    }
+
+    return user;
   }
 
   @Get('/info/:id')
@@ -43,6 +59,7 @@ export class UserController {
     };
   }
 
+  @UsePipes(UpdateAccountValidatorPipe)
   @Put()
   async updateAccount(
     @Body() body: IUpdateUser,
