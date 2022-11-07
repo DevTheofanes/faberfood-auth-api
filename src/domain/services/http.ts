@@ -12,3 +12,7 @@ export interface IRequest {
     path: string;
   };
 }
+
+export interface IReq {
+  userId: number;
+}

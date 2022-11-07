@@ -46,7 +46,7 @@ export class SessionController {
 
     await this.userService.addFeatureAccess({
       userId: user.id,
-      feature: 'PUT:/user/:id',
+      feature: 'PUT:/user/',
     });
 
     return {

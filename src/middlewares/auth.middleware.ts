@@ -35,6 +35,7 @@ export class AuthMiddleware implements NestMiddleware {
           .json({ error: 'Access Invalid' });
       }
 
+      req.userId = user.id;
       next();
     } catch (error: any) {
       return res

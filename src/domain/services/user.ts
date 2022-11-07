@@ -30,3 +30,11 @@ export interface IFindUser {
   email?: string;
   phone?: string;
 }
+
+export interface IUpdateUser {
+  id?: number;
+  name?: string;
+  username?: string;
+  email?: string;
+  phone?: string;
+}

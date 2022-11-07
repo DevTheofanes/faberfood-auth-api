@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IFindUser, IUser, IUserParams } from 'src/domain/services';
+import {
+  IFindUser,
+  IUpdateUser,
+  IUser,
+  IUserParams,
+} from 'src/domain/services';
 import { HashService } from './hash.service';
 import { PrismaService } from './prisma.service';
 
@@ -83,6 +88,101 @@ export class UserService {
       userClassification: user.fkUserClassification,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+    };
+  }
+
+  async update(params: IUpdateUser): Promise<IUser> {
+    const { id, name, username, email, phone } = params;
+    const user = await this.findOne({ id });
+    if (!user) throw new Error('Not Found.');
+    const data: IUpdateUser = {};
+
+    if (name && name !== user.name) {
+      data.name = name;
+    }
+
+    if (username && username !== user.username) {
+      const otherUserWithUsernameAlready =
+        await this.prismaService.user.findFirst({
+          where: {
+            id: {
+              not: id,
+            },
+            AND: { username },
+          },
+        });
+
+      if (otherUserWithUsernameAlready) {
+        throw new Error('Already Exists User with this username');
+      }
+      data.username = username;
+    }
+
+    if (email && email !== user.email) {
+      const otherUserWithEmailAlready = await this.prismaService.user.findFirst(
+        {
+          where: {
+            id: {
+              not: id,
+            },
+            AND: { email },
+          },
+        },
+      );
+
+      if (otherUserWithEmailAlready) {
+        throw new Error('Already Exists User with this email');
+      }
+      data.email = email;
+    }
+
+    if (phone && phone !== user.phone) {
+      const otherUserWithPhoneAlready = await this.prismaService.user.findFirst(
+        {
+          where: {
+            id: {
+              not: id,
+            },
+            AND: { phone },
+          },
+        },
+      );
+
+      if (otherUserWithPhoneAlready) {
+        throw new Error('Already Exists User with this phone');
+      }
+
+      data.phone = phone;
+    }
+
+    const accountUpdated = await this.prismaService.user.update({
+      where: { id },
+      data,
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        password: true,
+        phone: true,
+        userAccess: true,
+        fkUserClassification: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return {
+      id: accountUpdated.id,
+      name: accountUpdated.name,
+      username: accountUpdated.username,
+      email: accountUpdated.email,
+      phone: accountUpdated.phone,
+      password: accountUpdated.password,
+      userAccess: accountUpdated.userAccess,
+      userClassification: accountUpdated.fkUserClassification,
+      createdAt: accountUpdated.createdAt,
+      updatedAt: accountUpdated.updatedAt,
     };
   }
 
