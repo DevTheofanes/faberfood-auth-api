@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UserController, SessionController } from './controllers';
+import { AuthMiddleware } from './middlewares';
 import {
   HashService,
   PrismaService,
@@ -12,4 +13,11 @@ import {
   controllers: [UserController, SessionController],
   providers: [PrismaService, UserService, HashService, SessionService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: 'user', method: RequestMethod.POST })
+      .forRoutes(UserController);
+  }
+}

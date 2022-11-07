@@ -44,6 +44,11 @@ export class SessionController {
       feature: 'GET:/user/info/:id',
     });
 
+    await this.userService.addFeatureAccess({
+      userId: user.id,
+      feature: 'PUT:/user/:id',
+    });
+
     return {
       user: {
         ...user,
